@@ -1,0 +1,282 @@
+<div
+    class="absolute inset-0 flex flex-col min-w-0 overflow-y-auto"
+    cdkScrollable
+>
+    <!-- Header -->
+    <div
+        class="relative flex-0 py-8 px-4 sm:p-16 overflow-hidden bg-gray-800 dark"
+    >
+        <!-- Background - @formatter:off -->
+        <!-- Rings -->
+        <svg
+            class="absolute inset-0 pointer-events-none"
+            viewBox="0 0 960 540"
+            width="100%"
+            height="100%"
+            preserveAspectRatio="xMidYMax slice"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <g
+                class="text-gray-700 opacity-25"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="100"
+            >
+                <circle r="234" cx="196" cy="23"></circle>
+                <circle r="234" cx="790" cy="491"></circle>
+            </g>
+        </svg>
+        <!-- @formatter:on -->
+        <div class="z-10 relative flex flex-col items-center">
+            <div
+                class="mt-1 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight text-center"
+            >
+                El Turro Banarniax
+            </div>
+            <div
+                class="max-w-2xl mt-6 sm:text-2xl text-center tracking-tight text-secondary"
+            >
+                No se que poner, aca seguro pongo un par de graficos.
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto p-6 sm:p-10">
+        <div
+            class="flex flex-col flex-auto w-full max-w-xs sm:max-w-5xl mx-auto"
+        >
+            <!-- Filters -->
+            <div
+                class="flex flex-col sm:flex-row items-center justify-between w-full max-w-xs sm:max-w-none"
+            >
+                <mat-form-field
+                    class="w-full sm:w-36"
+                    [subscriptSizing]="'dynamic'"
+                >
+                    <mat-select
+                        [value]="'all'"
+                        (selectionChange)="filterByResult($event)"
+                    >
+                        <mat-option [value]="'all'">All</mat-option>
+                        <ng-container
+                            *ngFor="let result of results; trackBy: trackByFn"
+                        >
+                            <mat-option [value]="result">{{
+                                result
+                            }}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field
+                    class="w-full sm:w-72 mt-4 sm:mt-0 sm:ml-4"
+                    [subscriptSizing]="'dynamic'"
+                >
+                    <mat-icon
+                        matPrefix
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:search'"
+                    ></mat-icon>
+                    <input
+                        (input)="filterByQuery(query.value)"
+                        placeholder="Search by title or description"
+                        matInput
+                        #query
+                    />
+                </mat-form-field>
+                <mat-slide-toggle
+                    class="mt-8 sm:mt-0 sm:ml-auto"
+                    [color]="'primary'"
+                    (change)="toggleCompleted($event)"
+                >
+                    Hide completed
+                </mat-slide-toggle>
+            </div>
+            <!-- Bets -->
+            <ng-container *ngIf="this.filteredBets?.length; else noBets">
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8 sm:mt-10"
+                >
+                    <ng-container
+                        *ngFor="let bet of filteredBets; trackBy: trackByFn"
+                    >
+                        <!-- Bet -->
+                        <div
+                            class="flex flex-col h-120 shadow rounded-2xl overflow-hidden bg-card"
+                        >
+                            <div class="flex flex-col p-6">
+                                <div class="flex items-center justify-between">
+                                    <!-- Bet category -->
+                                    <ng-container *ngIf="bet?.oddResult">
+                                        <div
+                                            class="py-0.5 px-3 rounded-full text-sm font-semibold"
+                                            [ngClass]="{
+                                                'text-green-800 bg-green-100 dark:text-green-50 dark:bg-green-500':
+                                                    bet?.oddResult === 'true',
+                                                'text-red-800 bg-red-100 dark:text-red-50 dark:bg-red-500':
+                                                    bet?.oddResult === 'false',
+                                                'text-amber-800 bg-amber-100 dark:text-amber-50 dark:bg-amber-500':
+                                                    bet?.oddResult === 'draw'
+                                            }"
+                                        >
+                                            {{
+                                                bet?.oddResult === "true"
+                                                    ? "Buen Pronostico"
+                                                    : bet?.oddResult === "false"
+                                                    ? "Mal Pronostico"
+                                                    : "Empate"
+                                            }}
+                                        </div>
+                                    </ng-container>
+                                    <!-- Completed at least once -->
+                                    <div class="flex items-center">
+                                        <ng-container
+                                            *ngIf="bet?.oddResult === true"
+                                        >
+                                            <mat-icon
+                                                class="icon-size-5 text-green-600"
+                                                [svgIcon]="
+                                                    'heroicons_solid:badge-check'
+                                                "
+                                                [matTooltip]="
+                                                    'Buen Pronostico!'
+                                                "
+                                            ></mat-icon>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                                <!-- Bet title & description -->
+                                <div class="mt-4 text-lg font-medium">
+                                    ⚽️ {{ bet?.homeTeam }} vs
+                                    {{ bet?.awayTeam }}
+                                </div>
+                                <div class="mt-0.5 line-clamp-2 text-secondary">
+                                    🏆{{ bet?.league }}
+                                </div>
+                                <div class="w-12 h-1 my-6 border-t-2"></div>
+                                <!-- Bet time -->
+                                <div
+                                    class="flex items-center leading-5 text-md font-bold text-secondary"
+                                >
+                                    📅
+                                    <div class="ml-1.5">
+                                        <!-- {{ bet?.date | date : "medium"  }} in spanish-->
+                                        {{
+                                            bet?.date
+                                                | date : "dd/MM/YYYY" : "UTC"
+                                        }}
+                                    </div>
+                                </div>
+                                <!-- Bet completion -->
+                                <div
+                                    class="flex items-center mt-2 leading-5 text-md font-bold text-secondary"
+                                >
+                                    🏆 Pronostico Ganador: {{ bet?.winnerTeam }}
+                                </div>
+
+                                <div
+                                    class="flex items-center mt-2 leading-5 text-md font-bold text-secondary"
+                                >
+                                    ⚔️ Probabilidad de Empate:
+                                    {{
+                                        bet?.drawProbability
+                                            ? drawProbabilityTeam
+                                            : "No"
+                                    }}
+                                </div>
+
+                                <div
+                                    class="flex items-center mt-2 leading-5 text-md font-bold text-secondary"
+                                >
+                                    📊 Promedio Equipo Local:
+                                    {{ bet?.homeBookmakerAverage }}
+                                </div>
+                                <div
+                                    class="flex items-center mt-2 leading-5 text-md font-bold text-secondary"
+                                >
+                                    📊 Promedio Equipo Visitante:
+                                    {{ bet?.awayBookmakerAverage }}
+                                </div>
+                                <div
+                                    class="flex items-center mt-2 leading-5 text-md font-bold text-secondary"
+                                >
+                                    📊 Promedio Empate:
+                                    {{ bet?.drawBookmakerAverage }}
+                                </div>
+                            </div>
+                            <!-- Footer -->
+                            <div class="flex flex-col w-full mt-auto">
+                                <!-- Bet progress -->
+                                <div class="relative h-0.5">
+                                    <mat-progress-bar
+                                        class="h-0.5"
+                                        [value]="100"
+                                    ></mat-progress-bar>
+                                </div>
+                            </div>
+
+                            <div class="flex-row w-full">
+                                <!-- three buttons 1 check 1 cross and 1 draw -->
+                                <div class="flex flex-row justify-center">
+                                    <button
+                                        mat-icon-button
+                                        [matTooltip]="'Buen Pronostico!'"
+                                        (click)="updateBet(bet, 'true')"
+                                    >
+                                        <mat-icon
+                                            class="icon-size-5 text-green-600"
+                                            [svgIcon]="
+                                                'heroicons_solid:badge-check'
+                                            "
+                                        ></mat-icon>
+                                    </button>
+                                    <button
+                                        mat-icon-button
+                                        [matTooltip]="'Mal Pronostico!'"
+                                        (click)="updateBet(bet, 'false')"
+                                    >
+                                        <mat-icon
+                                            class="icon-size-5 text-red-600"
+                                            [svgIcon]="
+                                                'heroicons_solid:x-circle'
+                                            "
+                                        ></mat-icon>
+                                    </button>
+                                    <button
+                                        mat-icon-button
+                                        [matTooltip]="'Empate!'"
+                                        (click)="updateBet(bet, 'draw')"
+                                    >
+                                        <mat-icon
+                                            class="icon-size-5 text-amber-500"
+                                            [svgIcon]="
+                                                'heroicons_solid:question-mark-circle'
+                                            "
+                                        ></mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+
+            <!-- No bets -->
+            <ng-template #noBets>
+                <div
+                    class="flex flex-auto flex-col items-center justify-center bg-gray-100 dark:bg-transparent"
+                >
+                    <mat-icon
+                        class="icon-size-24"
+                        [svgIcon]="'heroicons_outline:document-search'"
+                    ></mat-icon>
+                    <div
+                        class="mt-6 text-2xl font-semibold tracking-tight text-secondary"
+                    >
+                        No bets found!
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
