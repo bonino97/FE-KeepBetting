@@ -31,12 +31,17 @@
             <div
                 class="mt-1 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight text-center"
             >
-                El Turro Banarniax
+                Titulo Deportivo.
             </div>
             <div
-                class="max-w-2xl mt-6 sm:text-2xl text-center tracking-tight text-secondary"
+                class="max-w-2xl mt-6 sm:text-2xl text-center tracking-tight text-red-500"
             >
-                No se que poner, aca seguro pongo un par de graficos.
+                Pronosticos Errados: {{ badPronostics.length }}
+            </div>
+            <div
+                class="max-w-2xl mt-6 sm:text-2xl text-center tracking-tight text-green-500"
+            >
+                Pronosticos Acertados: {{ goodPronostics.length }}
             </div>
         </div>
     </div>

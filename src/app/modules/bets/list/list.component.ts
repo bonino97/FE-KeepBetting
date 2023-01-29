@@ -40,6 +40,10 @@ export class BetsListComponent implements OnInit, OnDestroy {
         hideCompleted$: new BehaviorSubject(false),
     };
 
+    badPronostics: Bets[] = [];
+    goodPronostics: Bets[] = [];
+    paymentAverage: number;
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -65,6 +69,14 @@ export class BetsListComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((bets: Bets[]) => {
                 this.bets = this.filteredBets = bets;
+
+                this.badPronostics = this.bets.filter(
+                    (bet) => bet?.oddResult === 'false'
+                );
+
+                this.goodPronostics = this.bets.filter(
+                    (bet) => bet?.oddResult === 'true'
+                );
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
