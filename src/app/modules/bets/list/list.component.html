@@ -63,12 +63,14 @@
                         [value]="'all'"
                         (selectionChange)="filterByResult($event)"
                     >
-                        <mat-option [value]="'all'">All</mat-option>
+                        <mat-option class="uppercase" [value]="'all'"
+                            >ALL</mat-option
+                        >
                         <ng-container
                             *ngFor="let result of results; trackBy: trackByFn"
                         >
-                            <mat-option [value]="result">{{
-                                result
+                            <mat-option [value]="result" class="uppercase">{{
+                                result | uppercase
                             }}</mat-option>
                         </ng-container>
                     </mat-select>
@@ -94,7 +96,7 @@
                     [color]="'primary'"
                     (change)="toggleCompleted($event)"
                 >
-                    Hide completed
+                    Esconder Pronosticos Completados
                 </mat-slide-toggle>
             </div>
             <!-- Bets -->

@@ -27,7 +27,7 @@ import { Bets } from '../../../shared/interfaces/bets.interface';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BetsListComponent implements OnInit, OnDestroy {
-    results = ['home', 'draw', 'away'];
+    results = ['true', 'false', 'away'];
     bets: Bets[];
     filteredBets: Bets[];
     filters: {
@@ -94,7 +94,7 @@ export class BetsListComponent implements OnInit, OnDestroy {
             // Filter by homeTeam
             if (oddResult !== 'all') {
                 this.filteredBets = this.filteredBets.filter(
-                    (bet) => bet?.homeTeam === oddResult
+                    (bet) => bet?.oddResult === oddResult
                 );
             }
 
@@ -111,6 +111,12 @@ export class BetsListComponent implements OnInit, OnDestroy {
                         bet?.homeTeam
                             .toLowerCase()
                             .includes(query.toLowerCase())
+                );
+            }
+
+            if (hideCompleted) {
+                this.filteredBets = this.filteredBets.filter(
+                    (bet) => !bet?.oddResult
                 );
             }
         });
